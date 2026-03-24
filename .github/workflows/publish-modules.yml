@@ -32,16 +32,25 @@ jobs:
               echo "Processing $dir..."
               cd "$dir"
               
-              # Install dependencies
-              npm ci || npm install
-              
+              # Temporarily remove workspaces from package.json to prevent npm from trying to resolve the unpublished module in playground
+              if [[ -f "package.json" ]]; then
+                cp package.json package.json.backup
+                node -e "const pkg = require('./package.json'); delete pkg.workspaces; require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2));"
+              fi
+
+              # Install dependencies using npm --no-workspaces or falling back to standard install
+              npm ci --no-workspaces || npm install --no-workspaces
+
               # Build the Nuxt 4 module
-              # For Nuxt modules, standard approach is using @nuxt/module-builder which is usually bound to "prepack"
               echo "Building Nuxt module..."
               npm run prepack --if-present
+
+              # Restore the package.json so publish includes the original file
+              if [[ -f "package.json.backup" ]]; then
+                mv package.json.backup package.json
+              fi
               
               # Publish to npm (requires NPM_TOKEN secret)
-              # Using --access public assuming these are public, change to restricted if needed
               npm publish --access public || echo "Publishing $dir failed or already published."
               
               cd - > /dev/null
