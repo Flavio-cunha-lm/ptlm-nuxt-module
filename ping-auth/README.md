@@ -22,10 +22,11 @@ ping-auth module for doing amazing things.
 
 ## Features
 
-<!-- Highlight some of the features your module provide here -->
-- ⛰ &nbsp;Foo
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
+- 🔐 &nbsp;Seamless integration with Ping Identity OIDC/OAuth2
+- 🧩 &nbsp;Out-of-the-box composables for user session management (`usePingAuth`)
+- 🛡️ &nbsp;Route protection middleware
+- 🔄 &nbsp;Auto-refresh tokens and state handling
+- ⚡ &nbsp;Full Server-Side Rendering (SSR) support
 
 ## Quick Setup
 
