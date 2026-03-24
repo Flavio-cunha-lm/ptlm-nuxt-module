@@ -57,7 +57,7 @@ jobs:
               fi
               
               # Publish to npm (requires NPM_TOKEN secret)
-              npm publish --access public || echo "Publishing $dir failed or already published."
+              npm publish --access public --tag latest || echo "Publishing $dir failed or already published."
               
               cd - > /dev/null
             fi
