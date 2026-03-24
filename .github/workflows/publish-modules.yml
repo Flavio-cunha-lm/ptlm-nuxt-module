@@ -43,11 +43,9 @@ jobs:
 
               # Prepare the Nuxt module to generate .nuxt/tsconfig.json
               echo "Preparing Nuxt module..."
-              if jq -e '.scripts["dev:prepare"]' package.json >/dev/null 2>&1; then
-                npm run dev:prepare
-              else
-                npx nuxt-module-build prepare || true
-              fi
+              # Nuxt prepare step requires the module to be built/linked, so we use `npx nuxt-module-build build --stub`
+              npx nuxt-module-build build --stub
+              npx nuxt-module-build prepare
 
               # Build the Nuxt 4 module
               echo "Building Nuxt module..."
