@@ -1,0 +1,51 @@
+name: Publish Modules to npm
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/package.json'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Install Dependencies & Publish
+        run: |
+          # Find all directories containing package.json inside moduleMaker
+          MODS=$(find . -mindepth 1 -maxdepth 1 -type d)
+          
+          for dir in $MODS; do
+            if [ -f "$dir/package.json" ]; then
+              echo "Processing $dir..."
+              cd "$dir"
+              
+              # Install dependencies
+              npm ci || npm install
+              
+              # Build the Nuxt 4 module
+              # For Nuxt modules, standard approach is using @nuxt/module-builder which is usually bound to "prepack"
+              echo "Building Nuxt module..."
+              npm run prepack --if-present
+              
+              # Publish to npm (requires NPM_TOKEN secret)
+              # Using --access public assuming these are public, change to restricted if needed
+              npm publish --access public || echo "Publishing $dir failed or already published."
+              
+              cd - > /dev/null
+            fi
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
