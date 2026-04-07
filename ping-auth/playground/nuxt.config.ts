@@ -12,8 +12,8 @@ export default defineNuxtConfig({
       pingAuth: {
         clientId: '',
         issuer: '',
-        redirectUri: 'http://localhost:3000/dashboard',
-        logoutUri: 'http://localhost:3000/',
+        redirectUri: '',
+        logoutUri: '',
         fullLogout: false,
       },
       ddEnv: 'local',
